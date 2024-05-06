@@ -61,6 +61,9 @@ module RPG{
     action weak_paralize(receiver: Creature): bool = {
         creatures' = creatures.setBy(receiver.id, creature => creature.set_paralized(1))
     }
+    action remove_paralize(receiver: Creature): bool = {
+        creatures' = creatures.setBy(receiver.id, creature => creature.set_paralized(0))
+    }
     action dumb_attack(attacker: Creature, receiver: Creature): bool = {
         all{
             check_creature_status(attacker, receiver),
@@ -70,9 +73,11 @@ module RPG{
             }else{
                 receiver
             }
-
+            // must have option to remove paralize, but how to get a reciver as someone paralized?
+            // need to check if someone in the team is paralized, the if it adds the option to save
+            // if no one is paralized the is no one to save.
             match attacker.class {
-                | None => any { basic_attack(Newreceiver), strong_paralize(Newreceiver)}  // Monster
+                | None => any { basic_attack(Newreceiver), strong_paralize(Newreceiver) }  // Monster
                 | Mage => any { basic_attack(Newreceiver), weak_paralize(Newreceiver) }
                 | Cleric => any { basic_attack(Newreceiver), give_immunit(), weak_paralize(Newreceiver) }
                 | Barbaric => any { basic_attack(Newreceiver), taunt(attacker, Newreceiver), weak_paralize(Newreceiver) }
