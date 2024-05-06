@@ -1,21 +1,21 @@
-Trabalho 1
+# Trabalho 1
 
-Métodos Formais 24 de abril de 2024
+## Métodos Formais 24 de abril de 2024
 
-Contents
+## Contents
 
-[1 Informações importantes](#_page0_x56.69_y466.54) 1
+[1 Informações importantes](#_page0_x56.69_y466.54)
 
-[2 Uma batalha vencível](#_page0_x56.69_y593.00) 1
+[2 Uma batalha vencível](#_page0_x56.69_y593.00)
 
-1. [Ataques ](#_page1_x56.69_y56.69). . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-1. [Paralisia ](#_page1_x56.69_y132.73). . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-1. [Provocação ( taunt ) ](#_page1_x56.69_y250.27). . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-1. Imunidade . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-1. Criaturas . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-1. Monstros . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-1. Personagens . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-6. Iniciativa . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+1. [Attacks ](#_page1_x56.69_y56.69)
+1. [Paralisia ](#_page1_x56.69_y132.73)
+1. [Provocação ( taunt ) ](#_page1_x56.69_y250.27)
+1. Imunidade
+1. Criaturas
+1. Monstros
+1. Personagens
+6. Iniciativa
 
 [3 Atividades do trabalho](#_page2_x56.69_y366.35)
 
@@ -36,7 +36,7 @@ De forma semelhante aos exemplos de jogo da velha e pokemons, você deve especif
 
 As regras dessa batalha são inspiradas em jogo de RPG, porém um tanto exageradas para que possamos explorar algumas correspondências interessantes com problemas e soluções reais.
 
-1. Ataques
+1. Attacks
 
 <a name="_page1_x56.69_y56.69"></a>Ataques são a forma de dar dano em criaturas. O dano é determinado por um inteiro, e ao receber um ataque, uma criatura perde uma quantidade de pontos de vida (HP - Health Points ) igual ao dano do ataque. Uma criatura morre quando seus pontos de vida chegam a zero.
 
