@@ -11,7 +11,7 @@
 1. [Ataques ](#_page1_x56.69_y56.69)
 1. [Paralisia ](#_page1_x56.69_y132.73)
 1. [Provocação ( taunt ) ](#_page1_x56.69_y250.27)
-1. [Imunidade] (#imunidaderef)
+1. [Imunidade](#imunidaderef)
 1. [Criaturas] ()
 1. [Monstros] ()
 1. [Personagens] ()
