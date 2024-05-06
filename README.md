@@ -19,18 +19,19 @@
 
 [3 Atividades do trabalho](#_page2_x56.69_y366.35)
 
-1. Especificação com as regras do jogo . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-1. Invariantes . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-1. Especificação com estratégia . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-1. Especificação com dois monstros . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+1. Especificação com as regras do jogo
+1. Invariantes
+1. Especificação com estratégia
+1. Especificação com dois monstros
 
-1  Informações<a name="_page0_x56.69_y466.54"></a> importantes
+# 1  Informações<a name="_page0_x56.69_y466.54"></a> importantes
 - Data de entrega: 22 de maio (quarta-feira)
 - Trabalho individual ou em dupla
 - Especificações a serem entregues em TLA+ ou Quint.
 - Formato de apresentação: Explicação breve do código (somente para a professora) + implementação de uma pequena modificação por membro.
 - Nota: 50% código entregue + 50% apresentação.
-2  Uma<a name="_page0_x56.69_y593.00"></a> batalha vencível
+
+# 2  Uma<a name="_page0_x56.69_y593.00"></a> batalha vencível
 
 De forma semelhante aos exemplos de jogo da velha e pokemons, você deve especificar um jogo onde as partes fazem jogadas aleatórias, mostrando que assim ambas as partes podem vencer; e então especificar uma versão desse jogo onde os personagens usam uma estratégia que garante que eles não percam.
 
@@ -46,15 +47,16 @@ As regras dessa batalha são inspiradas em jogo de RPG, porém um tanto exagerad
 
 - A paralisia infringida por monstros é permanente, e só pode ser removida se um personagem (não paralisado) usar seu turno para isso, ajudando um jogador paralisado e assim removendo sua paral- isia.
 - A paralisia infringida por personagens dura apenas um turno. Após perder um turno por paralisia, a criatura deixa de estar paralisada.
-3. Provocação<a name="_page1_x56.69_y250.27"></a> (taunt )
+
+# 3. Provocação<a name="_page1_x56.69_y250.27"></a> (taunt )
 
 Personagens da classe bárbaro tem habilidade de provocar um monstro para que ele passe a somente atacar o bárbaro, ignorando os outros personagens. Uma criatura provocada ataca somente quem a provocou. A provocação dura um turno, de forma que a criatura provocada deixa de estar provocada ao terminar seu turno.
 
-4. Imunidade
+# 4. Imunidade
 
 <a name="_page1_x56.69_y338.60"></a>Personagens da classe clérigo tem habilidade de melhorar a defesa dos seus aliados, deixando-os imunes. Ao usar essa habilidade, todos os aliados, incluindo o clérigo em si, recebem imunidade, que dura até o início do próximo turno do clérigo. Criaturas imunes não podem receber dano. Todo dano infringido a elas é reduzido a zero.
 
-5. Criaturas
+# 5. Criaturas
 
 <a name="_page1_x56.69_y429.05"></a>Essa batalha tem várias criaturas lutando entre si, entre elas monstros e personagens
 
@@ -84,7 +86,8 @@ Personagens da classe bárbaro tem habilidade de provocar um monstro para que el
    1. Atacar um monstro
    1. Remover paralisia de um personagem
    1. Provocar um monstro
-6. Iniciativa
+
+# 6. Iniciativa
 
 <a name="_page2_x56.69_y245.50"></a>No início da batalha, cada criatura roda um d20 (dado com 20 faces, de 1 até 20) para determinar sua iniciativa. Aqueles com maior iniciativa jogam primeiro, e os com menor iniciativa jogam por último. Se duas ou mais criaturas tiverem a mesma iniciativa, a ordem que elas jogam entre si não importa. Nesse caso, fica a critério de vocês qual o comportamento exato. Se uma criatura A tem iniciativa maior que a criatura B, A deve jogar antes de B. Após todas as criaturas jogarem uma vez, o ciclo reinicia seguindo as mesmas regras e a mesma iniciativa.
 
