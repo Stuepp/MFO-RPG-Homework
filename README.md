@@ -8,21 +8,21 @@
 
 [2 Uma batalha vencível](#_page0_x56.69_y593.00) 1
 
-1. [Ataques ](#_page1_x56.69_y56.69). . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 2
-1. [Paralisia ](#_page1_x56.69_y132.73). . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 2
-1. [Provocação ( taunt ) ](#_page1_x56.69_y250.27). . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 2
-1. Imunidade . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 2
-1. Criaturas . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 2
-1. Monstros . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 2
-1. Personagens . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 2
-6. Iniciativa . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 3
+1. [Ataques ](#_page1_x56.69_y56.69)
+1. [Paralisia ](#_page1_x56.69_y132.73)
+1. [Provocação ( taunt ) ](#_page1_x56.69_y250.27)
+1. [Imunidade] (#imunidaderef)
+1. [Criaturas] ()
+1. [Monstros] ()
+1. [Personagens] ()
+6. [Iniciativa] ()
 
 [3 Atividades do trabalho](#_page2_x56.69_y366.35) 3
 
-1. Especificação com as regras do jogo . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 3
-1. Invariantes . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 3
-1. Especificação com estratégia . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 3
-1. Especificação com dois monstros . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 4
+1. Especificação com as regras do jogo
+1. Invariantes
+1. Especificação com estratégia
+1. Especificação com dois monstros
 
 # 1  Informações<a name="_page0_x56.69_y466.54"></a> importantes
 - Data de entrega: 22 de maio (quarta-feira)
@@ -51,7 +51,7 @@ As regras dessa batalha são inspiradas em jogo de RPG, porém um tanto exagerad
 
 Personagens da classe bárbaro tem habilidade de provocar um monstro para que ele passe a somente atacar o bárbaro, ignorando os outros personagens. Uma criatura provocada ataca somente quem a provocou. A provocação dura um turno, de forma que a criatura provocada deixa de estar provocada ao terminar seu turno.
 
-4. Imunidade
+4. Imunidade <a name="imunidaderef"></a>
 
 <a name="_page1_x56.69_y338.60"></a>Personagens da classe clérigo tem habilidade de melhorar a defesa dos seus aliados, deixando-os imunes. Ao usar essa habilidade, todos os aliados, incluindo o clérigo em si, recebem imunidade, que dura até o início do próximo turno do clérigo. Criaturas imunes não podem receber dano. Todo dano infringido a elas é reduzido a zero.
 
@@ -115,4 +115,3 @@ Agora, modifique a especificação (mas salve o arquivo! Você precisa entregar 
 Por último, modifique a especificação anterior (com estratégia) para que a batalha seja contra dois mon- stros. Você pode escolher entregar um arquivo a mais com essa versão, ou simplesmente entregar com essa parte comentada, já que pode ser uma modificação de apenas uma linha.
 
 Essa batalha é impossível, mesmo com as estratégias empregadas. Assim, a invariante “nenhum per- sonagem morre” deve ser violada. Se os personagens estiverem sobrevivendo na sua versão, pode ser que alguma regra não esteja definida corretamente.
-4
