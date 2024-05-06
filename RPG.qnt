@@ -11,17 +11,18 @@ module RPG{
         class: Characeter_Class,
         hp: int,
         immnue: bool,
-        paralized: bool,
-        taunted: int
+        paralized: int,
+        taunted: int,
+        speed: int // initiative
     }
 
     pure val Characters = Set(
-        { id: 1 ,team: Character ,class: Mage, hp: 20, immune: false, paralized: false},
-        { id: 2 ,team: Character ,class: Cleric, hp: 20, immune: false, paralized: false},
-        { id: 3 ,team: Character ,class: Barbaric, hp: 150, immune: false, paralized: false}
+        { id: 1 ,team: Character ,class: Mage, hp: 20, immune: false, paralized: 0},
+        { id: 2 ,team: Character ,class: Cleric, hp: 20, immune: false, paralized: 0},
+        { id: 3 ,team: Character ,class: Barbaric, hp: 150, immune: false, paralized: 0}
     )
     pure val Monsters = Set(
-        {id: 4, team: Monster, hp: 100, paralized: false, taunted: false}
+        {id: 4, team: Monster, hp: 100, paralized: 0, taunted: -1}
     )
 
     var creatures: int -> Creature
@@ -29,8 +30,17 @@ module RPG{
     pure def do_damage(c: Creature, d: int): Creature = {
         {...c, hp: c.hp - d}
     }
-    pure def check_life_status(attacker: Creature, receiver: Creature): bool = {
-        all{ attacker != receiver, attacker.hp > 0, receiver.hp > 0 }
+    pure def set_taunted(c: Creature, attackerId: int): Creature ={
+        {...c, taunted: attackerId}
+    }
+    pure def check_creature_status(attacker: Creature, receiver: Creature): bool = {
+        all{ attacker != receiver, attacker.team != receiver.team, attacker.hp > 0, receiver.hp > 0, attacker.paralized == 0 }
+    }
+    pure def set_immunit(c: Creature, immnueStatus: bool): Creature = {
+        {...c, immnue: immnueStatus}
+    }
+    pure def set_paralized(c: Creature, paralizedRounds: int): Creature = {
+        {...c, paralized: paralizedRounds}
     }
 
     action basic_attack(receiver: Creature): bool = {
@@ -39,26 +49,53 @@ module RPG{
 
     action taunt(attacker: Creature, receiver: Creature): bool = {
         all{
-            creatures' = creatures.set(receiver.id, receiver.taunted = attacker.id)
+            creatures' = creatures.setBy(receiver.id, receiver => receiver.set_taunted(attacker.id))
         }
     }
     action give_immunit(): bool = {
-        true
+        creatures' = creatures.keys().mapBy(team => creatures.get(Character).set_immunit(true))
+    }
+    action strong_paralize(receiver: Creature): bool = {
+        creatures' = creatures.setBy(receiver.id, creature => creature.set_paralized(-1))
+    }
+    action weak_paralize(receiver: Creature): bool = {
+        creatures' = creatures.setBy(receiver.id, creature => creature.set_paralized(1))
     }
     action dumb_attack(attacker: Creature, receiver: Creature): bool = {
         all{
-            check_life_status(attacker, receiver),
-            attacker.team != receiver.team,
+            check_creature_status(attacker, receiver),
+            
+            val Newreceiver = if(attacker.taunted > 0){
+              creatures.get(attacker.taunted)  
+            }else{
+                receiver
+            }
 
-            match attacker.team {
-                | Monster => basic_attack(receiver)
-                | Character => match attacker.class {
-                    | Mage => basic_attack(receiver)
-                    | Cleric => basic_attack(receiver)
-                    | Barbaric => any { basic_attack(receiver), taunt(attacker, receiver) }
-                }
+            match attacker.class {
+                | None => any { basic_attack(Newreceiver), strong_paralize(Newreceiver)}  // Monster
+                | Mage => any { basic_attack(Newreceiver), weak_paralize(Newreceiver) }
+                | Cleric => any { basic_attack(Newreceiver), give_immunit(), weak_paralize(Newreceiver) }
+                | Barbaric => any { basic_attack(Newreceiver), taunt(attacker, Newreceiver), weak_paralize(Newreceiver) }
             },
         }
     }
 
+    action init = {
+        
+        // check speed of each creature, sort highest to lower in a list
+        }
+    }
+
+    action step = {
+        val attacker = creatures.get()
+        val receiver = creatures.get()
+        all {
+            dumb_attack(attacker, receiver),
+            // next creature in the sorted list
+            // a b c
+            // a selected now list is b c a
+        }
+    }
+
+    //val inv = creatures.values().forall(c -> c.hp > 0)
 }
