@@ -12,10 +12,10 @@
 1. [Paralisia ](#_page1_x56.69_y132.73)
 1. [Provocação ( taunt ) ](#_page1_x56.69_y250.27)
 1. [Imunidade](#imunidaderef)
-1. [Criaturas] ()
-1. [Monstros] ()
-1. [Personagens] ()
-6. [Iniciativa] ()
+1. [Criaturas](#criaturasref)
+1. [Monstros](#monstrosref)
+1. [Personagens](#personagensref)
+6. [Iniciativa](#iniciativaref)
 
 [3 Atividades do trabalho](#_page2_x56.69_y366.35) 3
 
@@ -55,20 +55,21 @@ Personagens da classe bárbaro tem habilidade de provocar um monstro para que el
 
 <a name="_page1_x56.69_y338.60"></a>Personagens da classe clérigo tem habilidade de melhorar a defesa dos seus aliados, deixando-os imunes. Ao usar essa habilidade, todos os aliados, incluindo o clérigo em si, recebem imunidade, que dura até o início do próximo turno do clérigo. Criaturas imunes não podem receber dano. Todo dano infringido a elas é reduzido a zero.
 
-5. Criaturas
+5. Criaturas <a name="criaturasref"></a>
 
 <a name="_page1_x56.69_y429.05"></a>Essa batalha tem várias criaturas lutando entre si, entre elas monstros e personagens
 
 - Monstros não atacam outros monstros
 - Personagens não atacam outros personagens
 - Podemos assumir que há somente um personagem de cada classe
-1. Monstros
+6. Monstros <a name="monstrosref"></a>
 
 <a name="_page1_x56.69_y521.62"></a>Todos os monstros são iguais. Monstros tem 100 pontos de vida iniciais, e podem fazer as seguintes ações em seus turnos (uma ação por turno)
 
 1. Atacar um personagem Os ataques de monstro sempre dão 20 de dano, exceto se esse for o primeiro turno de toda a batalha (ninguém jogou ainda), onde o ataque é mais fraco (ele ainda está carregando todo o seu poder). No primeiro turno, um monstro dá apenas 10 de dano.
 1. Paralizar um personagem Um monstro pode paralizar um personagem. Essa paralisia é permanente, e só é removida quando outro personagem usa sua ação para remover a paralisia de um jogador específico.
-2. Personagens
+
+7. Personagens <a name="personagensref"></a>
 
 <a name="_page1_x56.69_y665.87"></a>Os ataques de personagem causam 10 de dano, independente da classe.
 
@@ -85,7 +86,8 @@ Personagens da classe bárbaro tem habilidade de provocar um monstro para que el
    1. Atacar um monstro
    1. Remover paralisia de um personagem
    1. Provocar um monstro
-6. Iniciativa
+
+8. Iniciativa <a name="iniciativaref"></a>
 
 <a name="_page2_x56.69_y245.50"></a>No início da batalha, cada criatura roda um d20 (dado com 20 faces, de 1 até 20) para determinar sua iniciativa. Aqueles com maior iniciativa jogam primeiro, e os com menor iniciativa jogam por último. Se duas ou mais criaturas tiverem a mesma iniciativa, a ordem que elas jogam entre si não importa. Nesse caso, fica a critério de vocês qual o comportamento exato. Se uma criatura A tem iniciativa maior que a criatura B, A deve jogar antes de B. Após todas as criaturas jogarem uma vez, o ciclo reinicia seguindo as mesmas regras e a mesma iniciativa.
 
