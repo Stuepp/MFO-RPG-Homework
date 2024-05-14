@@ -24,6 +24,7 @@ module RPG{
     )
 
     var creatures: int -> Creature
+    var nextCreature: int -> Creature
 
     pure def do_damage(c: Creature, d: int): Creature = {
         {...c, hp: c.hp - d}
@@ -76,14 +77,11 @@ module RPG{
             }else{
                 receiver
             }
-            // must have option to remove paralize, but how to get a reciver as someone paralized?
-            // need to check if someone in the team is paralized, the if it adds the option to save
-            // if no one is paralized there is no one to save.
             match attacker.class {
                 | None => any { basic_attack(Newreceiver), strong_paralize(Newreceiver) }  // Monster
                 | Mage => any { basic_attack(Newreceiver), weak_paralize(Newreceiver), remove_paralize() }
-                | Cleric => any { basic_attack(Newreceiver), give_immunit(), weak_paralize(Newreceiver), remove_paralize }
-                | Barbaric => any { basic_attack(Newreceiver), taunt(attacker, Newreceiver), weak_paralize(Newreceiver), remove_paralize }
+                | Cleric => any { basic_attack(Newreceiver), give_immunit(), weak_paralize(Newreceiver), remove_paralize() }
+                | Barbaric => any { basic_attack(Newreceiver), taunt(attacker, Newreceiver), weak_paralize(Newreceiver), remove_paralize() }
             },
         }
     }
@@ -94,18 +92,31 @@ module RPG{
         nondet clericInitiaive = d20.oneOf()
         nondet barbarianInitiaive = d20.oneOf()
         nondet monsterInitiaive = d20.oneOf()
+        val initiativeList = [mageInitiaive, clericInitiaive, barbarianInitiaive, monsterInitiaive]
+        nextCreature' = 0
+        /*
+        all {
+            /*
+            creatures' = creatures.setBy(1, c => c.initiative = mageInitiaive)
+            creatures' = creatures.setBy(2, c => c.initiative = clericInitiaive)
+            creatures' = creatures.setBy(3, c => c.initiative = barbarianInitiaive)
+            creatures' = creatures.setBy(4, c => c.initiative = monsterInitiaive)
+            
+        }*/
         // with this Set, create a List sorted by the highest initiative to the lowest
-        }
     }
 
     action step = {
-        val attacker = creatures.get()
-        val receiver = Creatures.oneOf()
+        val attacker = creatures.get(initiativeList.nth(0))
+        val receiver = creatures.oneOf(Creatures.filter(not (attacker.team)))
+        val newNextCreature = if(nextCreature >= 3){
+            nextCreature' = 0
+            }else{
+                nextCreature' = nextCreature + 1
+            }
         all {
-            creatures' = [].indices().map(attacker => dumb_attack(attacker, receiver))
-            // next creature in the sorted list | better to make a List of the Set Creatures and make a map to run the dumb_attack on each el
-            // a b c
-            // a selected now list is b c a
+            dumb_attack(attacker, receiver)
+            nextCreature' = newNextCreature
         }
     }
 
