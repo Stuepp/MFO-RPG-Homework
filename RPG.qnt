@@ -54,6 +54,11 @@ module RPG{
             creatures' = creatures.setBy(receiver.id, receiver => receiver.set_taunted(attacker.id))
         }
     }
+    action remove_taunt(c: Creature): bool = {
+        all{
+            creatures' = creatures.setBy(c.id, c => c.set_taunted(0))
+        }
+    }
     action give_immunit(): bool = {
         creatures' = creatures.keys().mapBy(team => creatures.get(Character).set_immunit(true))
     }
@@ -73,7 +78,7 @@ module RPG{
             check_creature_status(attacker, receiver),
             
             val Newreceiver = if(attacker.taunted > 0){
-              creatures.get(attacker.taunted)  
+              creatures.get(attacker.taunted)
             }else{
                 receiver
             }
@@ -83,6 +88,7 @@ module RPG{
                 | Cleric => any { basic_attack(Newreceiver), give_immunit(), weak_paralize(Newreceiver), remove_paralize() }
                 | Barbaric => any { basic_attack(Newreceiver), taunt(attacker, Newreceiver), weak_paralize(Newreceiver), remove_paralize() }
             },
+            remove_taunt(attacker)
         }
     }
 
