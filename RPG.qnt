@@ -32,6 +32,9 @@ module RPG{
     pure def set_taunted(c: Creature, attackerId: int): Creature ={
         {...c, taunted: attackerId}
     }
+    pure def remove_taunt(c: Creature): bool = {
+        {...c, taunt: 0}
+    }
     pure def check_creature_status(attacker: Creature, receiver: Creature): bool = {
         all{ attacker != receiver, attacker.team != receiver.team, attacker.hp > 0, receiver.hp > 0, attacker.paralized == 0 }
     }
@@ -45,8 +48,8 @@ module RPG{
         {...c, initiative: initiative}
     }
 
-    action basic_attack(receiver: Creature): bool = {
-        creatures' = creatures.setBy(receiver.id, creature => creature.do_damage(basic_damge))
+    action basic_attack(attacker: Creature, receiver: Creature): bool = {
+        creatures' = creatures.setBy(receiver.id, creature => creature.do_damage(basic_damge)).setBy(attacker.id, creature => creature.remove_taunt())
     }
 
     action taunt(attacker: Creature, receiver: Creature): bool = {
@@ -54,16 +57,11 @@ module RPG{
             creatures' = creatures.setBy(receiver.id, receiver => receiver.set_taunted(attacker.id))
         }
     }
-    action remove_taunt(c: Creature): bool = {
-        all{
-            creatures' = creatures.setBy(c.id, c => c.set_taunted(0))
-        }
-    }
     action give_immunit(): bool = {
         creatures' = creatures.keys().mapBy(team => creatures.get(Character).set_immunit(true))
     }
-    action strong_paralize(receiver: Creature): bool = {
-        creatures' = creatures.setBy(receiver.id, creature => creature.set_paralized(-1))
+    action strong_paralize(attacker: Creature, receiver: Creature): bool = {
+        creatures' = creatures.setBy(receiver.id, creature => creature.set_paralized(-1)).setBy(attacker.id, creature => creature.remove_taunt())
     }
     action weak_paralize(receiver: Creature): bool = {
         creatures' = creatures.setBy(receiver.id, creature => creature.set_paralized(1))
@@ -72,6 +70,8 @@ module RPG{
         Creatures.filter(c => c.team == Character and c.paralized == 1) != Set(),
         nondet receiver = Creatures.filter(c => c.team == Character and c.paralized == 1).oneOf()
         creatures' = creatures.setBy(receiver.id, creature => creature.set_paralized(0))
+
+        // creatures.transformValues(c => c.set_paralized(0))
     }
     action dumb_attack(attacker: Creature, receiver: Creature): bool = {
         all{
@@ -83,14 +83,15 @@ module RPG{
                 receiver
             }
             match attacker.class {
-                | None => any { basic_attack(Newreceiver), strong_paralize(Newreceiver) }  // Monster
-                | Mage => any { basic_attack(Newreceiver), weak_paralize(Newreceiver), remove_paralize() }
-                | Cleric => any { basic_attack(Newreceiver), give_immunit(), weak_paralize(Newreceiver), remove_paralize() }
-                | Barbaric => any { basic_attack(Newreceiver), taunt(attacker, Newreceiver), weak_paralize(Newreceiver), remove_paralize() }
+                | None => any { basic_attack(attacker, Newreceiver), strong_paralize(attacker ,Newreceiver) }  // Monster
+                | Mage => any { basic_attack(attacker, Newreceiver), weak_paralize(Newreceiver), remove_paralize() }
+                | Cleric => any { basic_attack(attacker, Newreceiver), give_immunit(), weak_paralize(Newreceiver), remove_paralize() }
+                | Barbaric => any { basic_attack(attacker, Newreceiver), taunt(attacker, Newreceiver), weak_paralize(Newreceiver), remove_paralize() }
             },
-            remove_taunt(attacker)
         }
     }
+
+    var round: int
 
     action init = {
         val d20 = 1.to(20)
@@ -98,31 +99,16 @@ module RPG{
         nondet clericInitiaive = d20.oneOf()
         nondet barbarianInitiaive = d20.oneOf()
         nondet monsterInitiaive = d20.oneOf()
-        val initiativeList = [mageInitiaive, clericInitiaive, barbarianInitiaive, monsterInitiaive]
-        nextCreature' = 0
-        /*
-        all {
-            /*
-            creatures' = creatures.setBy(1, c => c.initiative = mageInitiaive)
-            creatures' = creatures.setBy(2, c => c.initiative = clericInitiaive)
-            creatures' = creatures.setBy(3, c => c.initiative = barbarianInitiaive)
-            creatures' = creatures.setBy(4, c => c.initiative = monsterInitiaive)
-            
-        }*/
-        // with this Set, create a List sorted by the highest initiative to the lowest
+        round' = 0
     }
 
     action step = {
-        val attacker = creatures.get(initiativeList.nth(0))
-        val receiver = creatures.oneOf(Creatures.filter(not (attacker.team)))
-        val newNextCreature = if(nextCreature >= 3){
-            nextCreature' = 0
-            }else{
-                nextCreature' = nextCreature + 1
-            }
+        val attackers_by_initiative = creatures.values().toList((c1, c2) => intCompare(c2.initiative, c1.initiative))
+        val attacker = attackers_by_initiative[round % creatures.keys().size()]
+        val receiver = creatures.values().filter(c => attacker != c).oneOf()
         all {
-            dumb_attack(attacker, receiver)
-            nextCreature' = newNextCreature
+            dumb_attack(attacker, receiver),
+            round' = round + 1,
         }
     }
 
