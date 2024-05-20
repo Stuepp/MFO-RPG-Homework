@@ -15,13 +15,13 @@ module RPG{
         taunted: int,
         initiative: int // initiative
     }
-
+    /*
     pure val Creatures = Set(
         { id: 1 ,team: Character,class: Mage, hp: 20, immune: false, paralized: 0, taunted: 0, initiative: 0},
         { id: 2 ,team: Character,class: Cleric, hp: 20, immune: false, paralized: 0, taunted: 0, initiative: 0},
         { id: 3 ,team: Character,class: Barbaric, hp: 150, immune: false, paralized: 0, taunted: 0, initiative: 0},
         {id: 4, team: Monster, class: None, hp: 100, immune: false, paralized: 0, taunted: 0, initiative: 0}
-    )
+    )*/
 
     var creatures: int -> Creature
     var nextCreature: int -> Creature
@@ -67,8 +67,8 @@ module RPG{
         creatures' = creatures.setBy(receiver.id, creature => creature.set_paralized(1))
     }
     action remove_paralize(): bool = all {
-        Creatures.filter(c => c.team == Character and c.paralized == 1) != Set(),
-        nondet receiver = Creatures.filter(c => c.team == Character and c.paralized == 1).oneOf()
+        creatures.filter(c => c.team == Character and c.paralized == 1) != Set(),
+        nondet receiver = creatures.filter(c => c.team == Character and c.paralized == 1).oneOf()
         creatures' = creatures.setBy(receiver.id, creature => creature.set_paralized(0))
 
         // creatures.transformValues(c => c.set_paralized(0))
@@ -99,11 +99,19 @@ module RPG{
         nondet clericInitiaive = d20.oneOf()
         nondet barbarianInitiaive = d20.oneOf()
         nondet monsterInitiaive = d20.oneOf()
-        round' = 0
+        all {
+            round' = 0,
+            creatures' = Map(
+                1 -> { id: 1 ,team: Character,class: Mage, hp: 20, immune: false, paralized: 0, taunted: 0, initiative: mageInitiaive},
+                2 -> { id: 2 ,team: Character,class: Cleric, hp: 20, immune: false, paralized: 0, taunted: 0, initiative: clericInitiaive},
+                3 -> { id: 3 ,team: Character,class: Barbaric, hp: 150, immune: false, paralized: 0, taunted: 0, initiative: barbarianInitiaive},
+                4 -> {id: 4, team: Monster, class: None, hp: 100, immune: false, paralized: 0, taunted: 0, initiative: monsterInitiaive}
+            )
+        }       
     }
 
     action step = {
-        val attackers_by_initiative = creatures.values().toList((c1, c2) => intCompare(c2.initiative, c1.initiative))
+        val attackers_by_initiative = creatures.values().toList((creature1, creature2) => intCompare(creature2.initiative, creature1.initiative))
         val attacker = attackers_by_initiative[round % creatures.keys().size()]
         val receiver = creatures.values().filter(c => attacker != c).oneOf()
         all {
