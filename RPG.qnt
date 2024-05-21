@@ -17,14 +17,7 @@ module RPG{
         taunted: int,
         initiative: int // initiative
     }
-    /*
-    pure val Creatures = Set(
-        { id: 1 ,team: Character,class: Mage, hp: 20, immune: false, paralized: 0, taunted: 0, initiative: 0},
-        { id: 2 ,team: Character,class: Cleric, hp: 20, immune: false, paralized: 0, taunted: 0, initiative: 0},
-        { id: 3 ,team: Character,class: Barbaric, hp: 150, immune: false, paralized: 0, taunted: 0, initiative: 0},
-        {id: 4, team: Monster, class: None, hp: 100, immune: false, paralized: 0, taunted: 0, initiative: 0}
-    )*/
-
+    
     var creatures: int -> Creature
     var nextCreature: int -> Creature
 
@@ -60,7 +53,6 @@ module RPG{
         }
     }
     action give_immunit(): bool = {
-        //creatures' = creatures.keys().mapBy(team => creatures.get(team) if())
         creatures' = creatures.transformValues(c => if(c.team == Character) c.set_immunit(true) else c)
     }
     action strong_paralize(attacker: Creature, receiver: Creature): bool = {
@@ -109,6 +101,7 @@ module RPG{
                 2 -> { id: 2 ,team: Character,class: Cleric, hp: 20, immune: false, paralized: 0, taunted: 0, initiative: clericInitiaive},
                 3 -> { id: 3 ,team: Character,class: Barbaric, hp: 150, immune: false, paralized: 0, taunted: 0, initiative: barbarianInitiaive},
                 4 -> {id: 4, team: Monster, class: Danone, hp: 100, immune: false, paralized: 0, taunted: 0, initiative: monsterInitiaive}
+                //5 -> {id: 5, team: Monster, class: Danone, hp: 100, immune: false, paralized: 0, taunted: 0, initiative: monsterInitiaive}
             )
         }
     }
@@ -123,5 +116,6 @@ module RPG{
         }
     }
 
-    //val inv = creatures.values().forall(c => c.hp > 0)
+    val noMonDies = creatures.values().forall(c => c.team == Monster and c.hp > 0)
+    val noCharDies = creatures.values().forall(c => c.team == Character and c.hp > 0)
 }
