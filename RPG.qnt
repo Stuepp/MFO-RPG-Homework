@@ -43,7 +43,6 @@ module RPG{
             attacker != receiver, 
             attacker.team != receiver.team, 
             attacker.hp > 0, receiver.hp > 0, 
-            attacker.paralized == 0 
         }
     }
     pure def set_immunit(c: Creature, immnueStatus: bool): Creature = {
@@ -54,6 +53,14 @@ module RPG{
     }
     pure def set_initiative(c: Creature, initiative: int):Creature = {
         {...c, initiative: initiative}
+    }
+
+    action skip_turn(attacker: Creature, receiver: Creature): bool = {
+        all {
+            val c = {...attacker, paralized: 0}
+            creatures' = creatures.setBy(attacker.id, creature => c),
+            last_attack' = Some({attacker: attacker, receiver: receiver, attack:"skip_turn"})
+        }
     }
 
     action basic_attack(attacker: Creature, receiver: Creature): bool = {
@@ -103,12 +110,17 @@ module RPG{
             }else{
                 receiver
             }
-            match attacker.class {
-                | Danone => any { basic_attack(attacker, Newreceiver), strong_paralize(attacker ,Newreceiver) }  // Monster
-                | Mage => any { basic_attack(attacker, Newreceiver), weak_paralize(attacker, Newreceiver), remove_paralize }
-                | Cleric => any { basic_attack(attacker, Newreceiver), give_immunit, weak_paralize(attacker, Newreceiver), remove_paralize }
-                | Barbaric => any { basic_attack(attacker, Newreceiver), taunt(attacker, Newreceiver), weak_paralize(attacker, Newreceiver), remove_paralize }
-            },
+
+            if(attacker.paralized != 0){
+                skip_turn(attacker, receiver)
+            }else{
+                match attacker.class {
+                    | Danone => any { basic_attack(attacker, Newreceiver), strong_paralize(attacker ,Newreceiver) }  // Monster
+                    | Mage => any { basic_attack(attacker, Newreceiver), weak_paralize(attacker, Newreceiver), remove_paralize }
+                    | Cleric => any { basic_attack(attacker, Newreceiver), give_immunit, weak_paralize(attacker, Newreceiver), remove_paralize }
+                    | Barbaric => any { basic_attack(attacker, Newreceiver), taunt(attacker, Newreceiver), weak_paralize(attacker, Newreceiver), remove_paralize }
+                }
+            }
         }
     }
 
@@ -121,12 +133,17 @@ module RPG{
             }else{
                 receiver
             }
-            match attacker.class {
-                | Danone => any { basic_attack(attacker, Newreceiver), strong_paralize(attacker ,Newreceiver) }  // Monster
-                | Mage => basic_attack(attacker, Newreceiver)
-                | Cleric => weak_paralize(attacker, Newreceiver)
-                | Barbaric => basic_attack(attacker, Newreceiver)
-            },
+
+            if(attacker.paralized != 0){
+                skip_turn(attacker, receiver)
+            }else{
+                match attacker.class {
+                    | Danone => any { basic_attack(attacker, Newreceiver), strong_paralize(attacker ,Newreceiver) }  // Monster
+                    | Mage => basic_attack(attacker, Newreceiver)
+                    | Cleric => weak_paralize(attacker, Newreceiver)
+                    | Barbaric => basic_attack(attacker, Newreceiver)
+                }
+            }
         }
     }
 
