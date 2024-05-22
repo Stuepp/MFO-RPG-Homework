@@ -98,7 +98,7 @@ module RPG{
         all{
             check_creature_status(attacker, receiver),
             
-            val Newreceiver = if(attacker.taunted > 0){
+            val Newreceiver = if(attacker.taunted > 0 and creatures.get(attacker.taunted).hp > 0 and creatures.get(attacker.taunted).team != attacker.team ){
               creatures.get(attacker.taunted)
             }else{
                 receiver
@@ -116,7 +116,7 @@ module RPG{
         all{
             check_creature_status(attacker, receiver),
             
-            val Newreceiver = if(attacker.taunted > 0){
+            val Newreceiver = if(attacker.taunted > 0 and creatures.get(attacker.taunted).hp > 0 and creatures.get(attacker.taunted).team != attacker.team ){
               creatures.get(attacker.taunted)
             }else{
                 receiver
@@ -161,6 +161,6 @@ module RPG{
         }
     }
 
-    val noMonDies = creatures.values().forall(c => c.team == Monster and c.hp > 0)
-    val noCharDies = creatures.values().forall(c => c.team == Character and c.hp > 0)
+    val noMonDies = creatures.values().filter(c => c.team == Monster).forall(c => c.hp > 0)
+    val noCharDies = creatures.values().filter(c => c.team == Character).forall(c => c.hp > 0)
 }
