@@ -95,12 +95,20 @@ module RPG{
         }
     }
     action remove_paralize(attacker: Creature): bool = all {
-        creatures.values().filter(c => c.team == Character and c.paralized == 1) != Set(),
-        nondet receiver = creatures.values().filter(c => c.team == Character and c.paralized == 1).oneOf()  
-        creatures' = creatures.setBy(receiver.id, creature => creature.set_paralized(0)),
-        //val receiverP = creatures.get(receiver.id)
-        last_attack' = last_attack//Some({attacker: attacker, receiver: receiverP, attack: "remove_paralize"})
-        // creatures.transformValues(c => c.set_paralized(0))
+        if(creatures.values().filter(c => c.team == Character and c.paralized != 0) != Set()) {
+            nondet receiver = creatures.values().filter(c => c.team == Character and c.paralized != 0).oneOf()  
+            val receiverP = creatures.get(receiver.id)
+            all {
+                creatures' = creatures.setBy(receiver.id, creature => creature.set_paralized(0)),
+                last_attack' = Some({attacker: attacker, receiver: receiverP, attack: "remove_paralize"})
+            }   
+            // creatures.transformValues(c => c.set_paralized(0))
+        }else{
+            all {
+                creatures' = creatures,
+                last_attack' = last_attack
+            }
+        }
     }
     action dumb_attack(attacker: Creature, receiver: Creature): bool = {
         all{
