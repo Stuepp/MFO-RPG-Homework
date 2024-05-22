@@ -150,16 +150,16 @@ module RPG{
                 if(attacker.team == Character and creatures.get(1).paralized != 0){
                     match attacker.class {
                     | Danone => any { basic_attack(attacker, Newreceiver), strong_paralize(attacker ,Newreceiver) }  // Monster
-                    | Mage => any{ weak_paralize(attacker, Newreceiver), remove_paralize(attacker)}
+                    | Mage => any{ weak_paralize(attacker, Newreceiver)}
                     | Cleric => any{remove_paralize(attacker)}
                     | Barbaric => any{remove_paralize(attacker)}
                     }
                 }else {
                     match attacker.class {
                     | Danone => any { basic_attack(attacker, Newreceiver), strong_paralize(attacker ,Newreceiver) }  // Monster
-                    | Mage => any{ weak_paralize(attacker, Newreceiver), remove_paralize(attacker)}
-                    | Cleric => any{give_immunit, remove_paralize(attacker)}
-                    | Barbaric => any{basic_attack(attacker, Newreceiver),  remove_paralize(attacker)}
+                    | Mage => any{ weak_paralize(attacker, Newreceiver)}
+                    | Cleric => any{remove_paralize(attacker)}
+                    | Barbaric => any{basic_attack(attacker, Newreceiver) }
                     }
                 }
                 

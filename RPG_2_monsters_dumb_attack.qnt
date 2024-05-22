@@ -148,12 +148,22 @@ module RPG{
             if(attacker.paralized != 0){
                 skip_turn(attacker, receiver)
             }else{
-                match attacker.class {
+                if(attacker.team == Character and creatures.get(1).paralized != 0){
+                    match attacker.class {
                     | Danone => any { basic_attack(attacker, Newreceiver), strong_paralize(attacker ,Newreceiver) }  // Monster
-                    | Mage => basic_attack(attacker, Newreceiver)
-                    | Cleric => weak_paralize(attacker, Newreceiver)
-                    | Barbaric => basic_attack(attacker, Newreceiver)
+                    | Mage => any{ weak_paralize(attacker, Newreceiver)}
+                    | Cleric => any{remove_paralize(attacker)}
+                    | Barbaric => any{remove_paralize(attacker)}
+                    }
+                }else {
+                    match attacker.class {
+                    | Danone => any { basic_attack(attacker, Newreceiver), strong_paralize(attacker ,Newreceiver) }  // Monster
+                    | Mage => any{ weak_paralize(attacker, Newreceiver)}
+                    | Cleric => any{remove_paralize(attacker)}
+                    | Barbaric => any{basic_attack(attacker, Newreceiver) }
+                    }
                 }
+                
             }
         }
     }
