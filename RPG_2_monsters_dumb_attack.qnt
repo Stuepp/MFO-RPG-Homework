@@ -156,7 +156,7 @@ module RPG{
         nondet clericInitiaive = d20.oneOf()
         nondet barbarianInitiaive = d20.oneOf()
         nondet monsterInitiaive = d20.oneOf()
-        //nondet monsterInitiaive2 = d20.oneOf()
+        nondet monsterInitiaive2 = d20.oneOf()
         all {
             last_attack' = None,
             round' = 0,
@@ -164,8 +164,8 @@ module RPG{
                 1 -> { id: 1 ,team: Character,class: Mage, hp: 20, immune: false, paralized: 0, taunted: 0, initiative: mageInitiaive},
                 2 -> { id: 2 ,team: Character,class: Cleric, hp: 20, immune: false, paralized: 0, taunted: 0, initiative: clericInitiaive},
                 3 -> { id: 3 ,team: Character,class: Barbaric, hp: 150, immune: false, paralized: 0, taunted: 0, initiative: barbarianInitiaive},
-                4 -> {id: 4, team: Monster, class: Danone, hp: 100, immune: false, paralized: 0, taunted: 0, initiative: monsterInitiaive}
-                //5 -> {id: 5, team: Monster, class: Danone, hp: 100, immune: false, paralized: 0, taunted: 0, initiative: monsterInitiaive2}
+                4 -> {id: 4, team: Monster, class: Danone, hp: 100, immune: false, paralized: 0, taunted: 0, initiative: monsterInitiaive},
+                5 -> {id: 5, team: Monster, class: Danone, hp: 100, immune: false, paralized: 0, taunted: 0, initiative: monsterInitiaive2}
             )
         }
     }

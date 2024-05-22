@@ -118,7 +118,7 @@ module RPG{
                 match attacker.class {
                     | Danone => any { basic_attack(attacker, Newreceiver), strong_paralize(attacker ,Newreceiver) }  // Monster
                     | Mage => any { basic_attack(attacker, Newreceiver), weak_paralize(attacker, Newreceiver), remove_paralize(attacker) }
-                    | Cleric => any { basic_attack(attacker, Newreceiver), give_immunit, weak_paralize(attacker, Newreceiver), remove_paralize(attacker) }
+                    | Cleric => any { basic_attack(attacker, Newreceiver), give_immunit, remove_paralize(attacker) }
                     | Barbaric => any { basic_attack(attacker, Newreceiver), taunt(attacker, Newreceiver), weak_paralize(attacker, Newreceiver), remove_paralize(attacker) }
                 }
             }
@@ -138,12 +138,22 @@ module RPG{
             if(attacker.paralized != 0){
                 skip_turn(attacker, receiver)
             }else{
-                match attacker.class {
+                if(attacker.team == Character and creatures.get(1).paralized != 0){
+                    match attacker.class {
                     | Danone => any { basic_attack(attacker, Newreceiver), strong_paralize(attacker ,Newreceiver) }  // Monster
-                    | Mage => basic_attack(attacker, Newreceiver)
-                    | Cleric => weak_paralize(attacker, Newreceiver)
-                    | Barbaric => basic_attack(attacker, Newreceiver)
+                    | Mage => any{ weak_paralize(attacker, Newreceiver), remove_paralize(attacker)}
+                    | Cleric => any{remove_paralize(attacker)}
+                    | Barbaric => any{remove_paralize(attacker)}
+                    }
+                }else {
+                    match attacker.class {
+                    | Danone => any { basic_attack(attacker, Newreceiver), strong_paralize(attacker ,Newreceiver) }  // Monster
+                    | Mage => any{ weak_paralize(attacker, Newreceiver), remove_paralize(attacker)}
+                    | Cleric => any{give_immunit, remove_paralize(attacker)}
+                    | Barbaric => any{basic_attack(attacker, Newreceiver),  remove_paralize(attacker)}
+                    }
                 }
+                
             }
         }
     }
@@ -156,7 +166,7 @@ module RPG{
         nondet clericInitiaive = d20.oneOf()
         nondet barbarianInitiaive = d20.oneOf()
         nondet monsterInitiaive = d20.oneOf()
-        //nondet monsterInitiaive2 = d20.oneOf()
+        nondet monsterInitiaive2 = d20.oneOf()
         all {
             last_attack' = None,
             round' = 0,
@@ -164,8 +174,8 @@ module RPG{
                 1 -> { id: 1 ,team: Character,class: Mage, hp: 20, immune: false, paralized: 0, taunted: 0, initiative: mageInitiaive},
                 2 -> { id: 2 ,team: Character,class: Cleric, hp: 20, immune: false, paralized: 0, taunted: 0, initiative: clericInitiaive},
                 3 -> { id: 3 ,team: Character,class: Barbaric, hp: 150, immune: false, paralized: 0, taunted: 0, initiative: barbarianInitiaive},
-                4 -> {id: 4, team: Monster, class: Danone, hp: 100, immune: false, paralized: 0, taunted: 0, initiative: monsterInitiaive}
-                //5 -> {id: 5, team: Monster, class: Danone, hp: 100, immune: false, paralized: 0, taunted: 0, initiative: monsterInitiaive2}
+                4 -> {id: 4, team: Monster, class: Danone, hp: 100, immune: false, paralized: 0, taunted: 0, initiative: monsterInitiaive},
+                5 -> {id: 5, team: Monster, class: Danone, hp: 100, immune: false, paralized: 0, taunted: 0, initiative: monsterInitiaive2}
             )
         }
     }
@@ -175,7 +185,7 @@ module RPG{
         val attacker = attackers_by_initiative[round % creatures.keys().size()]
         nondet receiver = creatures.values().filter(c => attacker.team != c.team).oneOf()
         all {
-            dumb_attack(attacker, receiver),
+            smart_attack(attacker, receiver),
             round' = round + 1,
         }
     }
