@@ -117,3 +117,10 @@ Agora, modifique a especificação (mas salve o arquivo! Você precisa entregar 
 Por último, modifique a especificação anterior (com estratégia) para que a batalha seja contra dois mon- stros. Você pode escolher entregar um arquivo a mais com essa versão, ou simplesmente entregar com essa parte comentada, já que pode ser uma modificação de apenas uma linha.
 
 Essa batalha é impossível, mesmo com as estratégias empregadas. Assim, a invariante “nenhum per- sonagem morre” deve ser violada. Se os personagens estiverem sobrevivendo na sua versão, pode ser que alguma regra não esteja definida corretamente.
+
+------
+# How to run:
+```
+   qunint run filename.qnt --invariant=invariantName --max-steps=X
+```
+standard max-steps is 20
