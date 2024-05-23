@@ -121,6 +121,6 @@ Essa batalha é impossível, mesmo com as estratégias empregadas. Assim, a inva
 ------
 # How to run:
 ```
-   qunint run filename.qnt --invariant=invariantName --max-steps=X
+   quint run filename.qnt --invariant=invariantName --max-steps=X
 ```
 standard max-steps is 20
