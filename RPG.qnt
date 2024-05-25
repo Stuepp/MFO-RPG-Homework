@@ -64,9 +64,16 @@ module RPG{
     }
 
     action basic_attack(attacker: Creature, receiver: Creature): bool = {
-        all {
-            creatures' = creatures.setBy(receiver.id, creature => creature.do_damage(basic_damge)).setBy(attacker.id, creature => creature.remove_taunt()),
-            last_attack' = Some({attacker: attacker, receiver: receiver, attack: "basic_attack"})
+        if(receiver.immune == true){
+            all{
+                creatures' = creatures.setBy(receiver.id, creature => creature.do_damage(0)).setBy(attacker.id, creature => creature.remove_taunt()),
+                last_attack' = Some({attacker: attacker, receiver: receiver, attack: "basic_attack"})
+            }
+        }else {   
+            all {
+                creatures' = creatures.setBy(receiver.id, creature => creature.do_damage(basic_damge)).setBy(attacker.id, creature => creature.remove_taunt()),
+                last_attack' = Some({attacker: attacker, receiver: receiver, attack: "basic_attack"})
+            }
         }
     }
 
@@ -120,7 +127,7 @@ module RPG{
                 receiver
             }
             //if(attacker.class == Cleric and attacker.immune == true){
-            //    creatures.transformValues(c => c.set_immunit(false))
+            //    val removeImuunit = creatures.transformValues(c => c.set_immunit(false))
             //}else{
             //    creatures.transformValues(c => c.set_immunit(false))
             //}
@@ -206,9 +213,17 @@ module RPG{
         val attackers_by_initiative = creatures.values().toList((creature1, creature2) => intCompare(creature2.initiative, creature1.initiative))
         val attacker = attackers_by_initiative[round % creatures.keys().size()]
         nondet receiver = creatures.values().filter(c => attacker.team != c.team).oneOf()
-        all {
-            dumb_attack(attacker, receiver),
-            round' = round + 1,
+
+        if(attacker.id == 2 and attacker.immune == true){
+            all{
+                dumb_attack(attacker, receiver),
+                round' = round + 1,
+            }
+        }else{
+            all {
+                dumb_attack(attacker, receiver),
+                round' = round + 1,
+            }
         }
     }
 
