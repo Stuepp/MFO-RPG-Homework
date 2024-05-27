@@ -63,15 +63,15 @@ module RPG{
         }
     }
 
-    action basic_attack(attacker: Creature, receiver: Creature): bool = {
+    action basic_attack(attacker: Creature, receiver: Creature, updatedCreatures: int->Creature): bool = {
         if(receiver.immune == true){
             all{
-                creatures' = creatures.setBy(receiver.id, creature => creature.do_damage(0)).setBy(attacker.id, creature => creature.remove_taunt()),
+                creatures' = updatedCreatures.setBy(receiver.id, creature => creature.do_damage(0)).setBy(attacker.id, creature => creature.remove_taunt()),
                 last_attack' = Some({attacker: attacker, receiver: receiver, attack: "basic_attack"})
             }
         }else {   
             all {
-                creatures' = creatures.setBy(receiver.id, creature => creature.do_damage(basic_damge)).setBy(attacker.id, creature => creature.remove_taunt()),
+                creatures' = updatedCreatures.setBy(receiver.id, creature => creature.do_damage(basic_damge)).setBy(attacker.id, creature => creature.remove_taunt()),
                 last_attack' = Some({attacker: attacker, receiver: receiver, attack: "basic_attack"})
             }
         }
@@ -126,30 +126,22 @@ module RPG{
             }else{
                 receiver
             }
-            //if(attacker.class == Cleric and attacker.immune == true){
-            //    val removeImuunit = creatures.transformValues(c => c.set_immunit(false))
-            //}else{
-            //    creatures.transformValues(c => c.set_immunit(false))
-            //}
+            val updatedCreatures = if(attacker.class == Cleric and attacker.immune == true){
+                creatures.transformValues(c => c.set_immunit(false))
+            }else{
+                creatures
+            }
+            // basic_attack receives updatedCreatures as param
 
             if(attacker.paralized != 0){
                 skip_turn(attacker, receiver)
             }else{
-                if(receiver.immune == true){
-                    match attacker.class {
-                        | Danone => any { basic_attack(attacker, Newreceiver)}  // Monster
-                        | Mage => any { basic_attack(attacker, Newreceiver), remove_paralize(attacker) }
-                        | Cleric => any { basic_attack(attacker, Newreceiver), give_immunit,remove_paralize(attacker) }
-                        | Barbaric => any { basic_attack(attacker, Newreceiver), taunt(attacker, Newreceiver), remove_paralize(attacker) }
+                match attacker.class {
+                        | Danone => any { basic_attack(attacker, Newreceiver, updatedCreatures), strong_paralize(attacker ,Newreceiver) }  // Monster
+                        | Mage => any { basic_attack(attacker, Newreceiver, updatedCreatures), weak_paralize(attacker, Newreceiver), remove_paralize(attacker) }
+                        | Cleric => any { basic_attack(attacker, Newreceiver, updatedCreatures), give_immunit, weak_paralize(attacker, Newreceiver), remove_paralize(attacker) }
+                        | Barbaric => any { basic_attack(attacker, Newreceiver, updatedCreatures), taunt(attacker, Newreceiver), remove_paralize(attacker) }
                     }
-                }else {
-                    match attacker.class {
-                        | Danone => any { basic_attack(attacker, Newreceiver), strong_paralize(attacker ,Newreceiver) }  // Monster
-                        | Mage => any { basic_attack(attacker, Newreceiver), weak_paralize(attacker, Newreceiver), remove_paralize(attacker) }
-                        | Cleric => any { basic_attack(attacker, Newreceiver), give_immunit, weak_paralize(attacker, Newreceiver), remove_paralize(attacker) }
-                        | Barbaric => any { basic_attack(attacker, Newreceiver), taunt(attacker, Newreceiver), remove_paralize(attacker) }
-                    }
-                }
             }
         }
     }
@@ -163,23 +155,27 @@ module RPG{
             }else{
                 receiver
             }
-
+            val updatedCreatures = if(attacker.class == Cleric and attacker.immune == true){
+                creatures.transformValues(c => c.set_immunit(false))
+            }else{
+                creatures
+            }
             if(attacker.paralized != 0){
                 skip_turn(attacker, receiver)
             }else{
                 if(attacker.team == Character and creatures.get(1).paralized != 0){
                     match attacker.class {
-                    | Danone => any { basic_attack(attacker, Newreceiver), strong_paralize(attacker ,Newreceiver) }  // Monster
+                    | Danone => any { basic_attack(attacker, Newreceiver, updatedCreatures), strong_paralize(attacker ,Newreceiver) }  // Monster
                     | Mage => any{ weak_paralize(attacker, Newreceiver)}
                     | Cleric => any{remove_paralize(attacker)}
                     | Barbaric => any{remove_paralize(attacker)}
                     }
                 }else {
                     match attacker.class {
-                    | Danone => any { basic_attack(attacker, Newreceiver), strong_paralize(attacker ,Newreceiver) }  // Monster
+                    | Danone => any { basic_attack(attacker, Newreceiver, updatedCreatures), strong_paralize(attacker ,Newreceiver) }  // Monster
                     | Mage => any{ weak_paralize(attacker, Newreceiver)}
                     | Cleric => any{remove_paralize(attacker)}
-                    | Barbaric => any{basic_attack(attacker, Newreceiver) }
+                    | Barbaric => any{basic_attack(attacker, Newreceiver, updatedCreatures) }
                     }
                 }
                 
@@ -213,17 +209,9 @@ module RPG{
         val attackers_by_initiative = creatures.values().toList((creature1, creature2) => intCompare(creature2.initiative, creature1.initiative))
         val attacker = attackers_by_initiative[round % creatures.keys().size()]
         nondet receiver = creatures.values().filter(c => attacker.team != c.team).oneOf()
-
-        if(attacker.id == 2 and attacker.immune == true){
-            all{
-                dumb_attack(attacker, receiver),
-                round' = round + 1,
-            }
-        }else{
-            all {
-                dumb_attack(attacker, receiver),
-                round' = round + 1,
-            }
+        all{
+            dumb_attack(attacker, receiver),
+            round' = round + 1,
         }
     }
 
