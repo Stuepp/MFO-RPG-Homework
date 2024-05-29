@@ -64,7 +64,7 @@ module RPG{
     }
 
     action basic_attack(attacker: Creature, receiver: Creature, updatedCreatures: int->Creature): bool = {
-        if(receiver.immune == true){
+        if(receiver.immune == true){ // está olhando para um receiver desatualizado?
             all{
                 creatures' = updatedCreatures.setBy(receiver.id, creature => creature.do_damage(0)).setBy(attacker.id, creature => creature.remove_taunt()),
                 last_attack' = Some({attacker: attacker, receiver: receiver, attack: "basic_attack"})
@@ -139,7 +139,7 @@ module RPG{
                 match attacker.class {
                         | Danone => any { basic_attack(attacker, Newreceiver, updatedCreatures), strong_paralize(attacker ,Newreceiver) }  // Monster
                         | Mage => any { basic_attack(attacker, Newreceiver, updatedCreatures), weak_paralize(attacker, Newreceiver), remove_paralize(attacker) }
-                        | Cleric => any { basic_attack(attacker, Newreceiver, updatedCreatures), give_immunit, weak_paralize(attacker, Newreceiver), remove_paralize(attacker) }
+                        | Cleric => any { basic_attack(attacker, Newreceiver, updatedCreatures), give_immunit, remove_paralize(attacker) }
                         | Barbaric => any { basic_attack(attacker, Newreceiver, updatedCreatures), taunt(attacker, Newreceiver), remove_paralize(attacker) }
                     }
             }
