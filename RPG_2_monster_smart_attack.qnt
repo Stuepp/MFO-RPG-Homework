@@ -76,10 +76,10 @@ module RPG{
             last_attack' = Some({attacker: attacker, receiver: receiver, attack: "taunt"})
         }
     }
-    action give_immunit(): bool = {
+    action give_immunit(attacker: Creature, receiver: Creature): bool = {
         all {
             creatures' = creatures.transformValues(c => if(c.team == Character) c.set_immunit(true) else c),
-            last_attack' = last_attack
+            last_attack' = Some({attacker: attacker, receiver: receiver, attack: "give_immunit"})
         }
     }
     action strong_paralize(attacker: Creature, receiver: Creature): bool = {
@@ -96,20 +96,14 @@ module RPG{
     }
     
     action remove_paralize(attacker: Creature): bool = all {
-        if(creatures.values().filter(c => c.team == Character and c.paralized != 0) != Set()) {
-            nondet receiver = creatures.values().filter(c => c.team == Character and c.paralized != 0).oneOf()  
-            val receiverP = creatures.get(receiver.id)
-            all {
-                creatures' = creatures.setBy(receiver.id, creature => creature.set_paralized(0)),
-                last_attack' = Some({attacker: attacker, receiver: receiverP, attack: "remove_paralize"})
-            }   
-            // creatures.transformValues(c => c.set_paralized(0))
-        }else{
-            all {
-                creatures' = creatures,
-                last_attack' = last_attack
-            }
-        }
+        creatures.values().filter(c => c.team == Character and c.paralized != 0) != Set(),
+        nondet receiver = creatures.values().filter(c => c.team == Character and c.paralized != 0).oneOf()  
+        val receiverP = creatures.get(receiver.id)
+        all {
+            creatures' = creatures.setBy(receiver.id, creature => creature.set_paralized(0)),
+            last_attack' = Some({attacker: attacker, receiver: receiverP, attack: "remove_paralize"})
+        }   
+        // creatures.transformValues(c => c.set_paralized(0))
     }
     action dumb_attack(attacker: Creature, receiver: Creature): bool = {
         all{
@@ -127,7 +121,7 @@ module RPG{
                 match attacker.class {
                     | Danone => any { basic_attack(attacker, Newreceiver), strong_paralize(attacker ,Newreceiver) }  // Monster
                     | Mage => any { basic_attack(attacker, Newreceiver), weak_paralize(attacker, Newreceiver), remove_paralize(attacker) }
-                    | Cleric => any { basic_attack(attacker, Newreceiver), give_immunit, remove_paralize(attacker) }
+                    | Cleric => any { basic_attack(attacker, Newreceiver), give_immunit(attacker, Newreceiver), remove_paralize(attacker) }
                     | Barbaric => any { basic_attack(attacker, Newreceiver), taunt(attacker, Newreceiver), remove_paralize(attacker) }
                 }
             }
